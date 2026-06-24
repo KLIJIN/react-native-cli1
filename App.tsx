@@ -1,107 +1,127 @@
-import React from 'react';
-import {
-  StatusBar,
-  useColorScheme,
-  View,
-  Text,
-  Button,
-  Pressable,
-} from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { NavigationContainer, useNavigation } from '@react-navigation/native'; // NavigationContainer — контейнер для всей навигации, как мозг приложения
-import { createStackNavigator } from '@react-navigation/stack'; // createStackNavigator — создает навигацию в стиле "стопки страниц" (как в браузере: вперед/назад)
-import { StackNavigationProp } from '@react-navigation/stack';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { Button } from '@react-navigation/elements';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Entypo from '@react-native-vector-icons/entypo';
+import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 
-/** Это словарь маршрутов — здесь мы говорим: "У нас есть два экрана: Home и Details, и ни один из них не принимает параметры (undefined)". Это TypeScript помогает избежать ошибок. */
-type RootStackParamList = {
-  Home: undefined;
-  Details: undefined;
-};
+import HomeScreen from './src/screen/HomeScreen';
 
-type RootStackNavigationProp = StackNavigationProp<RootStackParamList>;
-const Stack = createStackNavigator<RootStackParamList>();
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList {
+      Home: undefined;
+      Reorder: undefined;
+    }
+  }
+}
 
-/** главная страница home page приложения */
-function HomeScreen() {
-  const navigation = useNavigation<RootStackNavigationProp>();
-
-  const pressHandler = () => {
-    navigation.navigate('Details');
-  };
+function ReorderScreen() {
+  const navigation = useNavigation();
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Главная страница!</Text>
-      {/* <Button title="Перейти к деталям" onPress={pressHandler} /> */}
+      <Text>ReorderScreen Screen</Text>
+      <Button onPress={() => navigation.navigate('Home')}>Go to Home</Button>
+    </View>
+  );
+}
 
-      <Pressable
-        onPress={pressHandler}
-        style={{
-          backgroundColor: 'aqua',
-          paddingTop: 10,
-          paddingBottom: 10,
-          paddingLeft: 10,
-          paddingRight: 10,
-           borderRadius: 25
+function CartScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>CartScreen </Text>
+    </View>
+  );
+}
+
+function AccountScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>CartScreen </Text>
+    </View>
+  );
+}
+
+const HomeTabIcon = ({
+  color,
+  size,
+}: {
+  focused: boolean;
+  color: string;
+  size: number;
+}) => <Entypo name="home" color={color} size={size} />;
+
+const ReorderTabIcon = ({
+  color,
+  size,
+}: {
+  focused: boolean;
+  color: string;
+  size: number;
+}) => <MaterialIcons name="reorder" color={color} size={size} />;
+
+const CartTabIcon = ({
+  color,
+  size,
+}: {
+  focused: boolean;
+  color: string;
+  size: number;
+}) => <MaterialIcons name="shopping-cart" color={color} size={size} />;
+
+const AccountTabIcon = ({
+  color,
+  size,
+}: {
+  focused: boolean;
+  color: string;
+  size: number;
+}) => <MaterialIcons name="person" color={color} size={size} />;
+
+const Tab = createBottomTabNavigator();
+
+function BottomTabs() {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: '#E96E6e',
+        // tabBarInactiveTintColor: 'gray',
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarLabel: 'Главная',
+          tabBarIcon: HomeTabIcon,
         }}
-      >
-        <Text>Перейти к деталям</Text>
-      </Pressable>
-    </View>
+      />
+      <Tab.Screen
+        name="Reorder"
+        component={ReorderScreen}
+        options={{ tabBarIcon: ReorderTabIcon }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{ tabBarIcon: CartTabIcon }}
+      />
+      <Tab.Screen
+        name="Account"
+        component={AccountScreen}
+        options={{ tabBarIcon: AccountTabIcon }}
+      />
+    </Tab.Navigator>
   );
 }
 
-/** DetailsScreen — экран деталей */
-function DetailsScreen() {
+export default function App() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>пустая страница с деталями</Text>
-    </View>
-  );
-}
-
-function AppContent() {
-  return (
-    // NavigationContainer — обертка-менеджер всей навигации
     <NavigationContainer>
-      {/* Stack.Navigator — создаем "стопку" экранов. initialRouteName="Home" — первый экран при запуске 
-
-
-      */}
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{ headerShown: true }}
-      >
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Главная!' }}
-        />
-        <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
-          options={{ title: 'Детали.' }}
-        />
-      </Stack.Navigator>
+      <BottomTabs />
     </NavigationContainer>
   );
 }
-
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <SafeAreaProvider>
-      {/* // StatusBar верхняя полоска телефона (где время, батарея)*/}
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor="#FF6B00"
-        translucent={false}
-      />
-
-      {/* контент */}
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-export default App;
