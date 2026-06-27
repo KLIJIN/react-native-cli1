@@ -89,6 +89,7 @@ function BottomTabs() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: '#E96E6e',
         // tabBarInactiveTintColor: 'gray',
+        headerShown: false,
       }}
     >
       <Tab.Screen
