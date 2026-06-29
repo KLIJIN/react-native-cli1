@@ -3,16 +3,28 @@ import { Text, View } from 'react-native';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Button } from '@react-navigation/elements';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Entypo from '@react-native-vector-icons/entypo';
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 
 import HomeScreen from './src/screen/HomeScreen';
+import ProductDetails from './src/screen/ProductDetails';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 declare global {
   namespace ReactNavigation {
     interface RootParamList {
       Home: undefined;
       Reorder: undefined;
+      ProductDetails: {
+        item: {
+          id: number | string;
+          image: string;
+          title: string;
+          price: number;
+          isLiked?: boolean;
+        };
+      };
     }
   }
 }
@@ -81,6 +93,26 @@ const AccountTabIcon = ({
 }) => <MaterialIcons name="person" color={color} size={size} />;
 
 const Tab = createBottomTabNavigator();
+const HomeStack = createNativeStackNavigator();
+
+const MyHomeStack = () => {
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen
+        name="ProductDetails"
+        component={ProductDetails}
+        options={{
+          title: 'Product Details',
+        }}
+      />
+    </HomeStack.Navigator>
+  );
+};
 
 function BottomTabs() {
   return (
@@ -93,8 +125,8 @@ function BottomTabs() {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeStack"
+        component={MyHomeStack}
         options={{
           tabBarLabel: 'Главная',
           tabBarIcon: HomeTabIcon,
@@ -121,8 +153,10 @@ function BottomTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <BottomTabs />
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <BottomTabs />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

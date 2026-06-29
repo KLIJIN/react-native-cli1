@@ -1,8 +1,8 @@
 import {
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
+  Text,
   View,
   FlatList,
 } from 'react-native';
@@ -10,18 +10,46 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 
+import data from '../data/data.json';
+
 import Header from '../components/Header';
 import Category from '../components/Category';
 import { useState } from 'react';
+import ProductCard from '../components/ProductCard';
 
 const categoriesList = ['Trending', 'All', 'New', 'Mens', 'Womans'];
 
+interface ProductItem {
+  id: number | string;
+  image: string;
+  title: string;
+  price: number;
+  isLiked?: boolean;
+}
+
 function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState(categoriesList[0]);
+  const [products, setProducts] = useState<ProductItem[]>(data.products);
   const navigation = useNavigation();
 
   const pressHandler = () => navigation.navigate('Reorder');
 
+  const likeHandler = (id: string) => {
+    const newProducts = products.map(productEl => {
+      if (String(productEl.id) === id) {
+        return {
+          ...productEl,
+          isLiked: productEl?.isLiked ? false : true,
+        };
+      }
+
+      return productEl;
+    });
+
+    setProducts(newProducts);
+  };
+
+  console.log(likeHandler);
   return (
     <LinearGradient
       colors={['#FDF0F3', '#FFFBFC']}
@@ -49,12 +77,30 @@ function HomeScreen() {
           renderItem={({ item }) => {
             console.log('item', item);
             return (
-              <Category item={item} onPress={el => setSelectedCategory(el)}  isSelected ={ selectedCategory ===  item}   />
+              <Category
+                item={item}
+                onPress={el => setSelectedCategory(el)}
+                isSelected={selectedCategory === item}
+              />
             );
           }}
           keyExtractor={item => item}
           horizontal
           showsHorizontalScrollIndicator={false}
+        />
+      </View>
+
+      <View style={{ marginTop: 20 }}>
+        <FlatList
+          data={products}
+          renderItem={({ item }) => (
+            <ProductCard item={item} handleLiked={likeHandler} />
+          )}
+          keyExtractor={item => String(item.id)}
+          numColumns={2}
+          contentContainerStyle={styles.productsContainer}
+          columnWrapperStyle={styles.productsRow}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </LinearGradient>
@@ -64,6 +110,16 @@ function HomeScreen() {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  productsContainer: {
+    marginTop: 10,
+    paddingHorizontal: 32,
+    paddingBottom: 20,
+  },
+
+  productsRow: {
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   inputContainer: {
     backgroundColor: '#FFFFFF',
     height: 48,
@@ -90,5 +146,18 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 25,
   },
-  home: { flex: 1, paddingHorizontal: 32 },
+  home: {
+    // flex: 1,
+    paddingHorizontal: 32,
+  },
+
+  // productCardContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'center' /* вертикально */,
+  //   alignItems: 'center' /* горизонтально */,
+  //   marginTop: 27,
+  //   paddingHorizontal: 32,
+  //   columnGap: 18,
+  //   flexWrap: 'wrap',
+  // },
 });
