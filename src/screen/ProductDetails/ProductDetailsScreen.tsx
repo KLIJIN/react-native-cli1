@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../../components/Header';
 
@@ -23,7 +23,6 @@ type HomeStackParamList = {
   Home: undefined;
   ProductDetails: {
     item: Product;
-
   };
 };
 
@@ -42,14 +41,14 @@ const colorsList = [
 const ProductDetails = () => {
   const [selectSize, setSelectSize] = useState<string | null>(sizeList[1]);
   const [selectedColor, setSelectedColor] = useState(colorsList[1]);
-  
+
   const route = useRoute<ProductDetailsRouteProp>();
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const { item } = route.params;
-   const product = route.params.item;
+  //  const product = route.params.item;
 
   const handleAddToCart = () => {
-    console.log('asf')
+    console.log('asf');
     // product.color = selectedColor;
     // product.size = selectedSize;
     // addToCartItem(product);

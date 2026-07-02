@@ -10,11 +10,12 @@ import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 import HomeScreen from './src/screen/HomeScreen';
 import ProductDetails from './src/screen/ProductDetails';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import CartScreen from './src/screen/CartScreen';
 
 declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      Home: undefined;
+      HomeStack: undefined;
       Reorder: undefined;
       ProductDetails: {
         item: {
@@ -35,18 +36,12 @@ function ReorderScreen() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>ReorderScreen Screen</Text>
-      <Button onPress={() => navigation.navigate('Home')}>Go to Home</Button>
+      <Button onPress={() => navigation.navigate('HomeStack')}>Go to Home</Button>
     </View>
   );
 }
 
-function CartScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>CartScreen </Text>
-    </View>
-  );
-}
+ 
 
 function AccountScreen() {
   return (
