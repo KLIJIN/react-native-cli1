@@ -7,22 +7,16 @@ import {
   View,
 } from 'react-native';
 import React, { useState } from 'react';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../../components/Header';
-
-type Product = {
-  id: number;
-  image: string;
-  title: string;
-  price: number;
-  isLiked?: boolean;
-};
+import { ProductItem } from '../HomeScreen';
+import { useCartStore } from '../../store/cartStore';
 
 type HomeStackParamList = {
   Home: undefined;
   ProductDetails: {
-    item: Product;
+    item: ProductItem;
   };
 };
 
@@ -42,17 +36,19 @@ const ProductDetails = () => {
   const [selectSize, setSelectSize] = useState<string | null>(sizeList[1]);
   const [selectedColor, setSelectedColor] = useState(colorsList[1]);
 
+  const { addToCart } = useCartStore();
+
   const route = useRoute<ProductDetailsRouteProp>();
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const { item } = route.params;
-  //  const product = route.params.item;
 
   const handleAddToCart = () => {
     console.log('asf');
     // product.color = selectedColor;
     // product.size = selectedSize;
-    // addToCartItem(product);
-    // navigation.navigate('CART');
+
+    addToCart(item);
+    navigation.goBack();
   };
 
   console.log('ProductDetails', item);
@@ -127,7 +123,6 @@ const ProductDetails = () => {
           </View>
         </View>
 
-        {/* cart button */}
         <View>
           <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
             <Text style={styles.buttonText}>Add to Cart</Text>

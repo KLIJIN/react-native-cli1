@@ -9,36 +9,33 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from '@react-native-vector-icons/entypo';
+import { ProductItem } from '../../screen/HomeScreen';
+import { SCREENS } from '../../../App';
 
 interface Props {
-  item: {
-    id: number | string;
-    image: string;
-    title: string;
-    price: number;
-    isLiked?: boolean;
-  };
-  handleLiked: (id: string) => void;
+  item: ProductItem;
+  likeHandler: (id: string) => void;
 }
 
-function ProductCard({ item, handleLiked }: Props) {
-  // const [isLiked, setIsLiked] = useState(false);
+function ProductCard({ item, likeHandler }: Props) {
   const navigation = useNavigation();
 
   const pressHandler = () => {
-    handleLiked(String(item.id));
+    likeHandler(String(item.id));
   };
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('ProductDetails', { item });
+        navigation.navigate(SCREENS.ProductDetails, { item });
       }}
       style={styles.container}
     >
       <Image source={{ uri: item.image }} style={styles.productImage} />
       <View style={styles.content}>
-        <Text style={styles.title}> {item.title}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}> {item.title}</Text>
+        </View>
         <Text style={styles.price}> $ {item.price}</Text>
       </View>
 
@@ -71,20 +68,26 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     // marginHorizontal: 10,
   },
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
   title: {
     color: '#444444',
     fontFamily: 'Poppins',
     fontWeight: 500,
-    fontSize: 18,
+    fontSize: 16,
   },
   price: {
     color: '#9C9C9C',
     fontFamily: 'Poppins',
     fontWeight: 600,
-    fontSize: 18,
+    fontSize: 16,
   },
   content: {
     paddingLeft: 3,
+    paddingRight: 3,
   },
   likeContainer: {
     backgroundColor: '#FFFFFF',
@@ -98,5 +101,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 24,
+  },
+  cartButton: {
+    marginTop: 3,
+    backgroundColor: '#E96E6E',
+    width: '100%',
+    height: 25,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

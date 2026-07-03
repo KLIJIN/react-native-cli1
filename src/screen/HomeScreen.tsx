@@ -14,42 +14,40 @@ import data from '../data/data.json';
 
 import Header from '../components/Header';
 import Category from '../components/Category';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
+import { useProductsStore } from '../store/productsStore';
+import { useCartStore } from '../store/cartStore';
 
 const categoriesList = ['Trending', 'All', 'New', 'Mens', 'Womans'];
 
-interface ProductItem {
-  id: number | string;
-  image: string;
+export interface ProductItem {
+  id: string;
   title: string;
+  image: string;
   price: number;
   isLiked?: boolean;
+  color?: string;
+  size?: string;
 }
 
 function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState(categoriesList[0]);
-  const [products, setProducts] = useState<ProductItem[]>(data.products);
+  const { products, addProducts, toggleLike } = useProductsStore();
+    const { cart } = useCartStore();
+    
   const navigation = useNavigation();
 
   const pressHandler = () => navigation.navigate('Reorder');
 
-  const likeHandler = (id: string) => {
-    const newProducts = products.map(productEl => {
-      if (String(productEl.id) === id) {
-        return {
-          ...productEl,
-          isLiked: productEl?.isLiked ? false : true,
-        };
-      }
+  useEffect(() => {
+     addProducts(data.products);
+  }, [addProducts]);
 
-      return productEl;
-    });
+  useEffect(() => {
+     console.log("cart", cart)
+  }, [cart]);
 
-    setProducts(newProducts);
-  };
-
-  console.log(likeHandler);
   return (
     <LinearGradient
       colors={['#FDF0F3', '#FFFBFC']}
@@ -72,10 +70,10 @@ function HomeScreen() {
           <Text>Go to ReorderScreen</Text>
         </Pressable>
 
+        {/* массив категорий */}
         <FlatList
           data={categoriesList}
           renderItem={({ item }) => {
-            console.log('item', item);
             return (
               <Category
                 item={item}
@@ -90,11 +88,12 @@ function HomeScreen() {
         />
       </View>
 
+      {/* массив каточек */}
       <View style={{ marginTop: 20 }}>
         <FlatList
           data={products}
           renderItem={({ item }) => (
-            <ProductCard item={item} handleLiked={likeHandler} />
+            <ProductCard item={item} likeHandler={toggleLike} />
           )}
           keyExtractor={item => String(item.id)}
           numColumns={2}

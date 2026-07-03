@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Entypo from '@react-native-vector-icons/entypo';
 import { MaterialIcons } from '@react-native-vector-icons/material-icons';
 
-import HomeScreen from './src/screen/HomeScreen';
+import HomeScreen, { ProductItem } from './src/screen/HomeScreen';
 import ProductDetails from './src/screen/ProductDetails';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import CartScreen from './src/screen/CartScreen';
@@ -18,17 +18,20 @@ declare global {
       HomeStack: undefined;
       Reorder: undefined;
       ProductDetails: {
-        item: {
-          id: number | string;
-          image: string;
-          title: string;
-          price: number;
-          isLiked?: boolean;
-        };
+        item: ProductItem;
       };
     }
   }
 }
+
+export const SCREENS = {
+  Home: 'home',
+  HomeStack: 'HomeStack',
+  Reorder: 'Reorder',
+  ProductDetails: 'ProductDetails',
+  Cart: 'Cart',
+  Account: 'Account',
+} as const;
 
 function ReorderScreen() {
   const navigation = useNavigation();
@@ -36,12 +39,12 @@ function ReorderScreen() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>ReorderScreen Screen</Text>
-      <Button onPress={() => navigation.navigate('HomeStack')}>Go to Home</Button>
+      <Button onPress={() => navigation.navigate(SCREENS.HomeStack)}>
+        Go to Home
+      </Button>
     </View>
   );
 }
-
- 
 
 function AccountScreen() {
   return (
@@ -92,18 +95,12 @@ const HomeStack = createNativeStackNavigator();
 
 const MyHomeStack = () => {
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name={SCREENS.Home} component={HomeScreen} />
       <HomeStack.Screen
-        name="ProductDetails"
+        name={SCREENS.ProductDetails}
         component={ProductDetails}
-        options={{
-          title: 'Product Details',
-        }}
+        options={{ title: 'Product Details' }}
       />
     </HomeStack.Navigator>
   );
@@ -120,7 +117,7 @@ function BottomTabs() {
       }}
     >
       <Tab.Screen
-        name="HomeStack"
+        name={SCREENS.HomeStack}
         component={MyHomeStack}
         options={{
           tabBarLabel: 'Главная',
@@ -128,17 +125,17 @@ function BottomTabs() {
         }}
       />
       <Tab.Screen
-        name="Reorder"
+        name={SCREENS.Reorder}
         component={ReorderScreen}
         options={{ tabBarIcon: ReorderTabIcon }}
       />
       <Tab.Screen
-        name="Cart"
+        name={SCREENS.Cart}
         component={CartScreen}
         options={{ tabBarIcon: CartTabIcon }}
       />
       <Tab.Screen
-        name="Account"
+        name={SCREENS.Account}
         component={AccountScreen}
         options={{ tabBarIcon: AccountTabIcon }}
       />

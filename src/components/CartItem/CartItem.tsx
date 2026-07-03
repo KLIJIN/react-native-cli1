@@ -1,46 +1,40 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
+import { ProductItem } from '../../screen/HomeScreen';
 
 interface CartItemProps {
-  item?: {
-    id: number | string;
-    image: string;
-    title: string;
-    price: number;
-    isLiked?: boolean;
-    size?: string;
-  };
-  handleDelete: (item: any) => void;
+  item?: ProductItem;
+  handleDelete: (id: string) => void;
 }
 
-const CartItem = ({ item }: CartItemProps) => {
+/** Item из корзины */
+const CartItem = ({ item, handleDelete }: CartItemProps) => {
   console.log(item);
 
-  const imageUrl =
-    'https://res.cloudinary.com/dlc5c1ycl/image/upload/v1710567612/cvafl35dv9wzisdsgtd6.png';
-
   const pressHandler = () => {
-    console.log('loajflksa');
+    if( item?.id) {
+      handleDelete(item.id)
+    }
   };
 
   return (
     <View style={styles.container}>
       {
         <>
-          <Image source={{ uri: imageUrl }} style={styles.productImage} />
+          <Image source={{ uri: item?.image }} style={styles.productImage} />
           <View style={styles.content}>
             <Text style={styles.title}>{item?.title || 'Jacket Jeans'}</Text>
-            <Text style={styles.price}>$37.9</Text>
+            <Text style={styles.price}>${item?.price}</Text>
             <View style={styles.details}>
               <View style={styles.color} />
               <View style={styles.size}>
-                <Text style={styles.title}>{item?.size || 'L'}</Text>
+                <Text style={styles.title}>{item?.size || 'M'}</Text>
               </View>
             </View>
           </View>
           <Pressable onPress={pressHandler} style={styles.close}>
-            <MaterialIcons name="clear" color="#F68CB5" size={22} />
+            <MaterialIcons name="clear" color="#E96E6E" size={22} />
           </Pressable>
         </>
       }

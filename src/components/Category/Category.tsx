@@ -7,7 +7,6 @@ interface Props {
 }
 
 function Category({ item, onPress, isSelected = false }: Props) {
-  console.log('Category');
 
   const pressHandler = () => {
     onPress(item);

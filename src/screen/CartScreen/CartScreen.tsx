@@ -4,17 +4,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import Header from '../../components/Header';
 import CartItem from '../../components/CartItem';
 
-import data from '../../data/data.json';
+import { useCartStore } from '../../store/cartStore';
 
-const cartItems = data.products.slice(0, 6);
-
+/** Страница корзина товаров */
 const CartScreen = () => {
+  const { cart, removeFromCart, getTotalPrice } = useCartStore();
+
   const pressHandler = () => {
-    console.log('loajflksa');
+    console.log(cart);
   };
 
-  const handleDeleteItem = (item: any) => {
-    console.log(item);
+
+  const handleDeleteItem = (id: string) => {
+    removeFromCart(id);
   };
 
   return (
@@ -27,7 +29,7 @@ const CartScreen = () => {
       <View style={styles.cartContainer}>
         <Header hasTitle />
         <FlatList
-          data={cartItems}
+          data={cart}
           renderItem={({ item }) => (
             <CartItem item={item} handleDelete={handleDeleteItem} />
           )}
@@ -38,7 +40,7 @@ const CartScreen = () => {
               <View style={styles.totalContainer}>
                 <View style={styles.totalRow}>
                   <Text>Total:</Text>
-                  <Text>$119.7</Text>
+                  <Text>${getTotalPrice()}</Text>
                 </View>
                 <View style={styles.totalRow}>
                   <Text>Shipping:</Text>
@@ -47,11 +49,11 @@ const CartScreen = () => {
                 <View style={styles.driver} />
                 <View style={styles.totalRow}>
                   <Text>Grand Total:</Text>
-                  <Text>$119.7</Text>
+                  <Text>${getTotalPrice()}</Text>
                 </View>
               </View>
               <Pressable onPress={pressHandler} style={styles.checkout}>
-                <Text style={styles.checkoutText}>Checkout</Text>
+                <Text style={styles.checkoutText}>Заказать</Text>
               </Pressable>
             </>
           }
